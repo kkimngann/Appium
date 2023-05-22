@@ -1,0 +1,12 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="SuiteRegression" verbose="1" >
+    <test name="AuthenticationAndForms" >
+        <parameter name = "systemPort" value="8300"/>
+        <parameter name = "udid" value="emulator-5554"/>
+        <classes>
+            <class name="test.Authentication.LoginTest" />
+            <class name="test.Form.FormsTest" />
+        </classes>
+    </test>
+</suite>

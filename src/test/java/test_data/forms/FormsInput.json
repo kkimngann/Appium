@@ -1,0 +1,10 @@
+[
+  {
+    "textInput": "Hi am Ngan, I will select option 1",
+    "selectOptionIndex": 1
+  },
+  {
+    "textInput": "Hi am Ngan, I will select option 2",
+    "selectOptionIndex": 2
+  }
+]
