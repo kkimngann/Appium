@@ -82,14 +82,14 @@ public class DriverFactory implements MobileCapabilityTypeEx {
                 caps.setCapability("appium:platformVersion", "13.0");
                 caps.setCapability("appium:automationName", "UiAutomator2");
                 MutableCapabilities sauceOptions = new MutableCapabilities();
-                sauceOptions.setCapability("username", "oauth-nganntk-9119c");
-                sauceOptions.setCapability("accessKey", "3d0c4fc1-023b-47c0-8e3a-13c97e8c921b");
+                sauceOptions.setCapability("username", System.getProperty("saucelab_username"));
+                sauceOptions.setCapability("accessKey", System.getProperty("saucelab_accessKey"));
                 sauceOptions.setCapability("build", "appium-build-MSXNW");
                 sauceOptions.setCapability("name", "First test");
                 caps.setCapability("sauce:options", sauceOptions);
                 switch (platform){
                     case android:
-                        URL url = new URL("https://ondemand.us-west-1.saucelabs.com:443/wd/hub");
+                        URL url = new URL(System.getProperty("saucelab_URL"));
                         appiumDriver = new AndroidDriver<MobileElement>(url, caps);
                         appiumDriver.manage().timeouts().implicitlyWait(1L, TimeUnit.SECONDS);
                         break;
