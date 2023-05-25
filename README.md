@@ -14,9 +14,12 @@ Start appium command: appium
 
 Install package: mvn clean install
 
-Run test: mvn clean test -DsuiteFile=src/test/resources/Parallel.xml
+Run test: mvn clean test -DsuiteFile=src/test/resources/Parallel.xml -Dsaucelab_username=<abc> -Dsaucelab_accessKey=<abcd>
 
 Generate report: allure generate --clean
+
+**Note**
+saucelab_URL = "https://ondemand.us-west-1.saucelabs.com:443/wd/hub"
 
 
 
