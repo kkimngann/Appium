@@ -21,7 +21,7 @@ pipeline {
                   mountPath: /data
               - name: maven
                 image: maven:3.8.6-openjdk-11-slim
-                command: ["mvn"]
+                command: ["/bin/sh", "-c", "sleep 3000"]
                 tty: true
                 volumeMounts:
                 - name: shared-data
