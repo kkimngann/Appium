@@ -11,16 +11,14 @@ pipeline {
                 containers:
                 - name: appium
                   image: appium/appium
-                  command:
-                  - cat
+                  command: ["/bin/sh", "-c", "sleep infinity"]
                   tty: true
                   volumeMounts:
                   - name: shared-data
                     mountPath: /data
                 - name: maven
                   image: maven:3.8.6-openjdk-11-slim
-                  command:
-                  - cat
+                  command: ["/bin/sh", "-c", "sleep infinity"]
                   tty: true
                   volumeMounts:
                   - name: shared-data
