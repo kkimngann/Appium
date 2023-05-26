@@ -12,7 +12,7 @@ pipeline {
               - name: regcred
               containers:
               - name: appium
-                image: appium/appium
+                image: appium/appium:v2.0.b63-p2
                 command: ["/bin/sh", "-c", "sleep infinity"]
                 tty: true
                 volumeMounts:
