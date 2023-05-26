@@ -13,14 +13,15 @@ pipeline {
               containers:
               - name: appium
                 image: appium/appium:v2.0.b63-p2
-                command: ["/bin/sh", "-c", "sleep infinity"]
-                tty: true
+                command: ["appium"]
+                ports:
+                - containerPort: 4723
                 volumeMounts:
                 - name: shared-data
                   mountPath: /data
               - name: maven
                 image: maven:3.8.6-openjdk-11-slim
-                command: ["/bin/sh", "-c", "sleep infinity"]
+                command: ["mvn"]
                 tty: true
                 volumeMounts:
                 - name: shared-data
@@ -50,41 +51,22 @@ pipeline {
 
     stages {
         stage('Run mobile tests'){
-            // Run appium and test parallelly
-            parallel {
-                stage('Start Appium server'){
-                    steps {
-                        script {
-                            container('appium') {
-                                try {
-                                    sh 'appium'
-                                } catch (err) {
-                                    echo "Appium server is not running"
-                                }
-                            }
-                        }
-                    }
-                }
+            environment {
+                SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
+                SAUCELABS_CREDENTIAL = credentials('ngannguyen_saucelab')
+            }
 
-                stage('Run test'){
-                    environment {
-                        SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
-                        SAUCELABS_CREDENTIAL = credentials('ngannguyen_saucelab')
-                    }
-
-                    steps {
-                        script {
-                            // Install maven packages and run tests
-                            container('maven') {
-                                try {
-                                    sh '''
-                                    mvn clean install
-                                    mvn clean test -DsuiteFile=src/test/resources/Parallel.xml -Dsaucelab_username=${SAUCELABS_CREDENTIAL_USR} -Dsaucelab_accessKey=${SAUCELABS_CREDENTIAL_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
-                                    '''
-                                } catch (err) {
-                                    echo "Test failed"
-                                }
-                            }
+            steps {
+                script {
+                    // Install maven packages and run tests
+                    container('maven') {
+                        try {
+                            sh '''
+                            mvn clean install
+                            mvn clean test -DsuiteFile=src/test/resources/Parallel.xml -Dsaucelab_username=${SAUCELABS_CREDENTIAL_USR} -Dsaucelab_accessKey=${SAUCELABS_CREDENTIAL_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
+                            '''
+                        } catch (err) {
+                            echo "Test failed"
                         }
                     }
                 }
