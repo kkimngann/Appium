@@ -14,8 +14,6 @@ pipeline {
               - name: appium
                 image: appium/appium:v2.0.b63-p2
                 command: ["appium"]
-                ports:
-                - containerPort: 4723
                 volumeMounts:
                 - name: shared-data
                   mountPath: /data
@@ -55,19 +53,20 @@ pipeline {
                 SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
                 SAUCELABS_CREDENTIAL = credentials('ngannguyen_saucelab')
             }
-
             steps {
+                echo SAUCELABS_CREDENTIAL_PWD
+                echo SAUCELABS_CREDENTIAL_USR
                 script {
                     // Install maven packages and run tests
-                    container('maven') {
-                        try {
-                            sh '''
-                            mvn clean install
-                            mvn clean test -DsuiteFile=src/test/resources/Parallel.xml -Dsaucelab_username=${SAUCELABS_CREDENTIAL_USR} -Dsaucelab_accessKey=${SAUCELABS_CREDENTIAL_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
-                            '''
-                        } catch (err) {
-                            echo "Test failed"
-                        }
+                    // container('maven') {
+                    //     try {
+                    //         sh '''
+                    //         mvn clean install
+                    //         mvn clean test -DsuiteFile=src/test/resources/Parallel.xml -Dsaucelab_username=${SAUCELABS_CREDENTIAL_USR} -Dsaucelab_accessKey=${SAUCELABS_CREDENTIAL_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
+                    //         '''
+                    //     } catch (err) {
+                    //         echo "Test failed"
+                    //     }
                     }
                 }
             }
@@ -79,8 +78,7 @@ pipeline {
                     container('allure') {
                         try {
                             sh 'allure generate --clean'
-                        }
-                        catch (err) {
+                        } catch (err) {
                             echo "Cannot generate allure report"
                         }
                     }
@@ -92,16 +90,16 @@ pipeline {
     post {
         always {
             // Archive test results
-            archiveArtifacts artifacts: 'allure-results/**/*'
-            // Publish test report for easy viewing
-            publishHTML (target : [allowMissing: false,
-            alwaysLinkToLastBuild: true,
-            keepAll: true,
-            reportDir: 'allure-report',
-            reportFiles: 'index.html',
-            reportName: 'allure-report',
-            reportTitles: '', 
-            useWrapperFileDirectly: true])
+            // archiveArtifacts artifacts: 'allure-results/**/*'
+            // // Publish test report for easy viewing
+            // publishHTML (target : [allowMissing: false,
+            // alwaysLinkToLastBuild: true,
+            // keepAll: true,
+            // reportDir: 'allure-report',
+            // reportFiles: 'index.html',
+            // reportName: 'allure-report',
+            // reportTitles: '', 
+            // useWrapperFileDirectly: true])
 
             script {
                 // Define Slack message blocks
@@ -127,7 +125,7 @@ pipeline {
                     "type": "section",
                     "text": [
                         "type": "mrkdwn",
-                        "text": "```${result}```"
+                        // "text": "```${result}```"
                         ]
                     ],
                     [
@@ -144,7 +142,7 @@ pipeline {
             }
 
             // Send notification
-            slackSend channel: 'automation-test-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
+            // slackSend channel: 'automation-test-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
         }
     }
 }
