@@ -54,9 +54,10 @@ pipeline {
                 SAUCELABS_CREDENTIAL = credentials('ngannguyen_saucelab')
             }
             steps {
-                echo SAUCELABS_CREDENTIAL_PWD
-                echo SAUCELABS_CREDENTIAL_USR
-                // script {
+                script {
+                    echo SAUCELABS_CREDENTIAL_USR
+                    echo SAUCELABS_CREDENTIAL_PWD
+
                     // Install maven packages and run tests
                     // container('maven') {
                     //     try {
@@ -68,7 +69,7 @@ pipeline {
                     //         echo "Test failed"
                     //     }
                     // }
-                // }
+                }
             }
         }
 
