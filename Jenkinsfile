@@ -55,7 +55,7 @@ pipeline {
             }
             steps {
                 script {
-                    Install maven packages and run tests
+                    // Install maven packages and run tests
                     container('maven') {
                         try {
                             sh '''
