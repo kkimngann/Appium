@@ -8,40 +8,42 @@ pipeline {
               labels:
                 jenkin-job: appium
             spec:
-                containers:
-                - name: appium
-                  image: appium/appium
-                  command: ["/bin/sh", "-c", "sleep infinity"]
-                  tty: true
-                  volumeMounts:
-                  - name: shared-data
-                    mountPath: /data
-                - name: maven
-                  image: maven:3.8.6-openjdk-11-slim
-                  command: ["/bin/sh", "-c", "sleep infinity"]
-                  tty: true
-                  volumeMounts:
-                  - name: shared-data
-                    mountPath: /data
-                - name: allure
-                  image: frankescobar/allure-docker-service:2.19.0
-                  command:
-                  - cat
-                  tty: true
-                  volumeMounts:
-                  - name: shared-data
-                    mountPath: /data
-                - name: jq
-                  image: stedolan/jq:latest
-                  command:
-                  - cat
-                  tty: true
-                  volumeMounts:
-                  - name: shared-data
-                    mountPath: /data
-                volumes:
+              imagePullSecrets:
+              - name: regcred
+              containers:
+              - name: appium
+                image: appium/appium
+                command: ["/bin/sh", "-c", "sleep infinity"]
+                tty: true
+                volumeMounts:
                 - name: shared-data
-                  emptyDir: {}
+                  mountPath: /data
+              - name: maven
+                image: maven:3.8.6-openjdk-11-slim
+                command: ["/bin/sh", "-c", "sleep infinity"]
+                tty: true
+                volumeMounts:
+                - name: shared-data
+                  mountPath: /data
+              - name: allure
+                image: frankescobar/allure-docker-service:2.19.0
+                command:
+                - cat
+                tty: true
+                volumeMounts:
+                - name: shared-data
+                  mountPath: /data
+              - name: jq
+                image: stedolan/jq:latest
+                command:
+                - cat
+                tty: true
+                volumeMounts:
+                - name: shared-data
+                  mountPath: /data
+              volumes:
+              - name: shared-data
+                emptyDir: {}
             '''
         }
     }
