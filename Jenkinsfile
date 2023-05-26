@@ -51,8 +51,7 @@ pipeline {
         stage('Run mobile tests'){
             environment {
                 SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
-                SAUCELABS_USR = credentials('ngannguyen_saucelab').username
-                SAUCELABS_PWD = credentials('ngannguyen_saucelab').password
+                SAUCELABS = credentials('ngannguyen_saucelab')
             }
             steps {
                 script {
@@ -61,7 +60,7 @@ pipeline {
                         try {
                             sh '''
                             mvn clean install
-                            mvn clean test -DsuiteFile=src/test/resources/Parallel.xml -Dsaucelab_username=${SAUCELABS_CREDENTIAL_USR} -Dsaucelab_accessKey=${SAUCELABS_CREDENTIAL_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
+                            mvn clean test -DsuiteFile=src/test/resources/Parallel.xml -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
                             '''
                         } catch (err) {
                             echo "Test failed"
