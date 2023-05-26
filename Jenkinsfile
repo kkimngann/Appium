@@ -51,24 +51,22 @@ pipeline {
         stage('Run mobile tests'){
             environment {
                 SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
-                SAUCELABS_CREDENTIAL = credentials('ngannguyen_saucelab')
+                SAUCELABS_USR = credentials('ngannguyen_saucelab').username
+                SAUCELABS_PWD = credentials('ngannguyen_saucelab').password
             }
             steps {
                 script {
-                    echo SAUCELABS_CREDENTIAL_USR
-                    echo SAUCELABS_CREDENTIAL_PWD
-
-                    // Install maven packages and run tests
-                    // container('maven') {
-                    //     try {
-                    //         sh '''
-                    //         mvn clean install
-                    //         mvn clean test -DsuiteFile=src/test/resources/Parallel.xml -Dsaucelab_username=${SAUCELABS_CREDENTIAL_USR} -Dsaucelab_accessKey=${SAUCELABS_CREDENTIAL_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
-                    //         '''
-                    //     } catch (err) {
-                    //         echo "Test failed"
-                    //     }
-                    // }
+                    Install maven packages and run tests
+                    container('maven') {
+                        try {
+                            sh '''
+                            mvn clean install
+                            mvn clean test -DsuiteFile=src/test/resources/Parallel.xml -Dsaucelab_username=${SAUCELABS_CREDENTIAL_USR} -Dsaucelab_accessKey=${SAUCELABS_CREDENTIAL_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
+                            '''
+                        } catch (err) {
+                            echo "Test failed"
+                        }
+                    }
                 }
             }
         }
@@ -90,17 +88,17 @@ pipeline {
 
     post {
         always {
-            // Archive test results
-            // archiveArtifacts artifacts: 'allure-results/**/*'
-            // // Publish test report for easy viewing
-            // publishHTML (target : [allowMissing: false,
-            // alwaysLinkToLastBuild: true,
-            // keepAll: true,
-            // reportDir: 'allure-report',
-            // reportFiles: 'index.html',
-            // reportName: 'allure-report',
-            // reportTitles: '', 
-            // useWrapperFileDirectly: true])
+            Archive test results
+            archiveArtifacts artifacts: 'allure-results/**/*'
+            // Publish test report for easy viewing
+            publishHTML (target : [allowMissing: false,
+            alwaysLinkToLastBuild: true,
+            keepAll: true,
+            reportDir: 'allure-report',
+            reportFiles: 'index.html',
+            reportName: 'allure-report',
+            reportTitles: '', 
+            useWrapperFileDirectly: true])
 
             script {
                 // Define Slack message blocks
