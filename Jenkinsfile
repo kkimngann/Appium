@@ -6,7 +6,7 @@ pipeline {
             kind: Pod
             metadata:
               labels:
-                jenkin-job: selenium-appium
+                jenkin-job: appium
             spec:
                 containers:
                 - name: appium
