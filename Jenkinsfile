@@ -67,7 +67,7 @@ pipeline {
                     //     } catch (err) {
                     //         echo "Test failed"
                     //     }
-                    }
+                    // }
                 }
             }
         }
