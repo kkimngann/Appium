@@ -121,43 +121,45 @@ pipeline {
             reportTitles: '', 
             useWrapperFileDirectly: true])
 
-            // Define Slack message blocks
-            def blocks = [
-                [
-                    "type": "header",
-                    "text": [
-                        "type": "plain_text",
-                        "text": "FINISHED TEST",
-                    ]
-                ],
-                [
-                    "type": "divider"
-                ],
-                [
+            script {
+                // Define Slack message blocks
+                def blocks = [
+                    [
+                        "type": "header",
+                        "text": [
+                            "type": "plain_text",
+                            "text": "FINISHED TEST",
+                        ]
+                    ],
+                    [
+                        "type": "divider"
+                    ],
+                    [
+                        "type": "section",
+                        "text": [
+                            "type": "mrkdwn",
+                            "text": ":sunny: Job *${env.JOB_NAME}*'s result is ${currentBuild.currentResult}.\n*Summary:*"
+                        ]
+                    ],
+                    [
                     "type": "section",
                     "text": [
                         "type": "mrkdwn",
-                        "text": ":sunny: Job *${env.JOB_NAME}*'s result is ${currentBuild.currentResult}.\n*Summary:*"
-                    ]
-                ],
-                [
-                "type": "section",
-                "text": [
-                    "type": "mrkdwn",
-                    "text": "```${result}```"
-                    ]
-                ],
-                [
-                    "type": "divider"
-                ],
-                [
-                    "type": "section",
-                    "text": [
-                        "type": "mrkdwn",
-                        "text": ":pushpin: More info at:\n• *Build URL:* ${env.BUILD_URL}console\n• *Allure Report:* ${env.BUILD_URL}allure-report"
-                    ]
-                ],
-            ]
+                        "text": "```${result}```"
+                        ]
+                    ],
+                    [
+                        "type": "divider"
+                    ],
+                    [
+                        "type": "section",
+                        "text": [
+                            "type": "mrkdwn",
+                            "text": ":pushpin: More info at:\n• *Build URL:* ${env.BUILD_URL}console\n• *Allure Report:* ${env.BUILD_URL}allure-report"
+                        ]
+                    ],
+                ]
+            }
 
             // Send notification
             slackSend channel: 'automation-test-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
