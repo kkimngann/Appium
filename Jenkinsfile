@@ -56,7 +56,7 @@ pipeline {
             steps {
                 echo SAUCELABS_CREDENTIAL_PWD
                 echo SAUCELABS_CREDENTIAL_USR
-                script {
+                // script {
                     // Install maven packages and run tests
                     // container('maven') {
                     //     try {
@@ -68,7 +68,7 @@ pipeline {
                     //         echo "Test failed"
                     //     }
                     // }
-                }
+                // }
             }
         }
 
