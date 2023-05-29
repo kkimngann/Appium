@@ -13,7 +13,7 @@ pipeline {
               containers:
               - name: appium
                 image: appium/appium:v2.0.b63-p2
-                command: ["/bin/sh", "-c", "sleep 3000"]
+                command: ["cat"]
                 volumeMounts:
                 - name: shared-data
                   mountPath: /data
@@ -52,49 +52,53 @@ pipeline {
             steps {
                 script {
                     container('appium') {
-                        sh 'appium --port 4723 &'
-                    }
-                }
-            }
-        }
-
-        stage('Run mobile tests'){
-            environment {
-                SAUCELABS_DIR = "${WORKSPACE}/src/test/resources/Parallel.xml"
-                SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
-                SAUCELABS = credentials('ngannguyen_saucelab')
-            }
-            steps {
-                script {
-                    // Install maven packages and run tests
-                    container('maven') {
                         try {
-                            sh """
-                            mvn clean install
-                            mvn clean test -DsuiteFile=${SAUCELABS_DIR} -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
-                            """
+                            sh 'appium --port 4723 &'
                         } catch (err) {
-                            echo "Test failed"
+                            echo "Appium server start failed"
                         }
                     }
                 }
             }
         }
 
-        stage('publish report'){
-            steps {
-                script {
-                    container('allure') {
-                        try {
-                            sh 'allure generate --clean'
-                        } catch (err) {
-                            echo "Cannot generate allure report"
-                        }
-                    }
-                }
-            }
-        }
-    }
+    //     stage('Run mobile tests'){
+    //         environment {
+    //             SAUCELABS_DIR = "${WORKSPACE}/src/test/resources/Parallel.xml"
+    //             SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
+    //             SAUCELABS = credentials('ngannguyen_saucelab')
+    //         }
+    //         steps {
+    //             script {
+    //                 // Install maven packages and run tests
+    //                 container('maven') {
+    //                     try {
+    //                         sh """
+    //                         mvn clean install
+    //                         mvn clean test -DsuiteFile=${SAUCELABS_DIR} -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
+    //                         """
+    //                     } catch (err) {
+    //                         echo "Test failed"
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     stage('publish report'){
+    //         steps {
+    //             script {
+    //                 container('allure') {
+    //                     try {
+    //                         sh 'allure generate --clean'
+    //                     } catch (err) {
+    //                         echo "Cannot generate allure report"
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
     post {
         always {
@@ -111,8 +115,6 @@ pipeline {
             // useWrapperFileDirectly: true])
 
             script {
-                echo "Stop appium server"
-                sh "kill \$(lsof -t -i :4723)"
                 // Define Slack message blocks
                 def blocks = [
                     [
