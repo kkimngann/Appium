@@ -13,7 +13,7 @@ pipeline {
               containers:
               - name: appium
                 image: appium/appium:v2.0.b63-p2
-                command: ["sh", "-c", "JENKINS_NODE_COOKIE=dontKillMe appium"]
+                command: ["/bin/sh", "-c", "sleep 3000"]
                 ports:
                 - containerPort: 4723
                 volumeMounts:
@@ -50,6 +50,14 @@ pipeline {
     }
 
     stages {
+        stage('Start Appium server') {
+            steps {
+                script {
+                    sh "JENKINS_NODE_COOKIE=dontKillMe appium &"
+                }
+            }
+        }
+
         stage('Run mobile tests'){
             environment {
                 SAUCELABS_DIR = "${WORKSPACE}/src/test/resources/Parallel.xml"
@@ -83,15 +91,6 @@ pipeline {
                             echo "Cannot generate allure report"
                         }
                     }
-                }
-            }
-        }
-
-        stage('Cleanup') {
-            steps {
-                script {
-                    // Stop the Appium server by finding and killing the process
-                    sh 'kill -9 appium'
                 }
             }
         }
