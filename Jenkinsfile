@@ -13,7 +13,7 @@ pipeline {
               containers:
               - name: appium
                 image: appium/appium:v2.0.b63-p2
-                command: ["cat"]
+                command: ["appium"]
                 volumeMounts:
                 - name: shared-data
                   mountPath: /data
@@ -55,7 +55,7 @@ pipeline {
                         script {
                             container('appium') {
                                 try {
-                                    sh 'appium'
+                                    sh "tail -f /dev/null"
                                 } catch (err) {
                                     echo "Appium server start failed"
                                 }
