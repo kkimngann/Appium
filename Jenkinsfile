@@ -13,7 +13,7 @@ pipeline {
               containers:
               - name: appium
                 image: appium/appium:v2.0.b63-p2
-                command: ["/bin/sh", "-c", "appium", "&"]
+                command: ["appium"]
                 ports:
                 - containerPort: 4723
                 volumeMounts:
