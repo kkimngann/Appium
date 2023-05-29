@@ -55,7 +55,7 @@ pipeline {
                 script {
                     container ('appium') {
                         try {
-                            sh "JENKINS_NODE_COOKIE=dontKillMe appium &"
+                            sh 'nohup bash -c "appium 2>&1 &" && sleep 4'
                         } catch (err) {
                             echo "Appium server started failed"
                         }
