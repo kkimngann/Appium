@@ -101,16 +101,16 @@ pipeline {
     post {
         always {
             // Archive test results
-            archiveArtifacts artifacts: 'allure-results/**/*'
+            // archiveArtifacts artifacts: 'allure-results/**/*'
             // Publish test report for easy viewing
-            publishHTML (target : [allowMissing: false,
-            alwaysLinkToLastBuild: true,
-            keepAll: true,
-            reportDir: 'allure-report',
-            reportFiles: 'index.html',
-            reportName: 'allure-report',
-            reportTitles: '', 
-            useWrapperFileDirectly: true])
+            // publishHTML (target : [allowMissing: false,
+            // alwaysLinkToLastBuild: true,
+            // keepAll: true,
+            // reportDir: 'allure-report',
+            // reportFiles: 'index.html',
+            // reportName: 'allure-report',
+            // reportTitles: '', 
+            // useWrapperFileDirectly: true])
 
             script {
                 // Define Slack message blocks
