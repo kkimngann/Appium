@@ -56,7 +56,7 @@ pipeline {
                     container('maven') {
                         try {
                             sh """
-                            apt install lsoft -y
+                            apt install lsof -y
                             lsof -n -i:4723 | grep LISTEN
                             """
                         } catch (err) {
