@@ -55,7 +55,7 @@ pipeline {
                         script {
                             container('appium') {
                                 try {
-                                    sh 'appium --port 4723 &'
+                                    sh 'appium &'
                                 } catch (err) {
                                     echo "Appium server start failed"
                                 }
