@@ -13,7 +13,9 @@ pipeline {
               containers:
               - name: appium
                 image: appium/appium:v2.0.b63-p2
-                command: ["appium"]
+                command: ["sh", "-c", "JENKINS_NODE_COOKIE=dontKillMe appium"]
+                ports:
+                - containerPort: 4723
                 volumeMounts:
                 - name: shared-data
                   mountPath: /data
@@ -50,6 +52,7 @@ pipeline {
     stages {
         stage('Run mobile tests'){
             environment {
+                SAUCELABS_DIR = "src/test/resources/Parallel.xml"
                 SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
                 SAUCELABS = credentials('ngannguyen_saucelab')
             }
@@ -60,7 +63,7 @@ pipeline {
                         try {
                             sh '''
                             mvn clean install
-                            mvn clean test -DsuiteFile=src/test/resources/Parallel.xml -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
+                            mvn clean test -DsuiteFile=${SAUCELABS_DIR} -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
                             '''
                         } catch (err) {
                             echo "Test failed"
@@ -80,6 +83,15 @@ pipeline {
                             echo "Cannot generate allure report"
                         }
                     }
+                }
+            }
+        }
+
+        stage('Cleanup') {
+            steps {
+                script {
+                    // Stop the Appium server by finding and killing the process
+                    sh 'pkill -f appium'
                 }
             }
         }
