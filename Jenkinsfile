@@ -53,7 +53,13 @@ pipeline {
         stage('Start Appium server') {
             steps {
                 script {
-                    sh "JENKINS_NODE_COOKIE=dontKillMe appium &"
+                    container ('appium') {
+                        try {
+                            sh "JENKINS_NODE_COOKIE=dontKillMe appium &"
+                        } catch (err) {
+                            echo "Appium server started failed"
+                        }
+                    }
                 }
             }
         }
