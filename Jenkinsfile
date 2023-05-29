@@ -56,9 +56,8 @@ pipeline {
                     container('maven') {
                         try {
                             sh """
-                            sleep 3000
-                            mvn clean install
-                            mvn clean test -DsuiteFile=${SAUCELABS_DIR} -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
+                            apt install lsoft -y
+                            lsof -n -i:4723 | grep LISTEN
                             """
                         } catch (err) {
                             echo "Test failed"
