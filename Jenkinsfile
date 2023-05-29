@@ -58,14 +58,13 @@ pipeline {
             }
             steps {
                 script {
-                    echo SAUCELABS_DIR
                     // Install maven packages and run tests
                     container('maven') {
                         try {
-                            sh '''
+                            sh """
                             mvn clean install
                             mvn clean test -DsuiteFile=${SAUCELABS_DIR} -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
-                            '''
+                            """
                         } catch (err) {
                             echo "Test failed"
                         }
