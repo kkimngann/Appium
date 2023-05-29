@@ -57,7 +57,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Run mobile tests'){
             environment {
                 SAUCELABS_DIR = "${WORKSPACE}/src/test/resources/Parallel.xml"
@@ -98,8 +98,6 @@ pipeline {
 
     post {
         always {
-            echo "Stop appium server"
-            sh "kill \$(lsof -t -i :4723)"
             // Archive test results
             // archiveArtifacts artifacts: 'allure-results/**/*'
             // Publish test report for easy viewing
@@ -113,6 +111,8 @@ pipeline {
             // useWrapperFileDirectly: true])
 
             script {
+                echo "Stop appium server"
+                sh "kill \$(lsof -t -i :4723)"
                 // Define Slack message blocks
                 def blocks = [
                     [
