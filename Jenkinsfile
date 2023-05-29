@@ -13,10 +13,7 @@ pipeline {
               containers:
               - name: appium
                 image: appium/appium:v2.0.b63-p2
-                command: ["appium"]
-                env:
-                - name: JENKINS_NODE_COOKIE
-                  value: "dontKillMe"
+                command: ["/bin/sh", "-c", "sleep 3000"]
                 volumeMounts:
                 - name: shared-data
                   mountPath: /data
@@ -51,6 +48,16 @@ pipeline {
     }
 
     stages {
+        stage('Start the Appium server') {
+            steps {
+                script {
+                    container('appium') {
+                        sh 'appium --port 4723 &'
+                    }
+                }
+            }
+        }
+        
         stage('Run mobile tests'){
             environment {
                 SAUCELABS_DIR = "${WORKSPACE}/src/test/resources/Parallel.xml"
@@ -91,6 +98,8 @@ pipeline {
 
     post {
         always {
+            echo "Stop appium server"
+            sh "kill \$(lsof -t -i :4723)"
             // Archive test results
             // archiveArtifacts artifacts: 'allure-results/**/*'
             // Publish test report for easy viewing
