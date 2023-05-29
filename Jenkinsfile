@@ -13,10 +13,7 @@ pipeline {
               containers:
               - name: appium
                 image: appium/appium:v2.0.b63-p2
-                command: ["/bin/sh", "-c", "sleep 3000"]
-                env:
-                - name: JENKINS_NODE_COOKIE
-                  value: "dontKillMe"
+                command: ["appium"]
                 volumeMounts:
                 - name: shared-data
                   mountPath: /data
@@ -43,42 +40,41 @@ pipeline {
     }
 
     stages {
-        stage('start appium server') {
-            steps {
-                script {
-                    container('appium') {
-                        try {
-                            sh 'appium'
-                        } catch (err) {
-                            echo "Cannot start appium server"
-                        }
-                    }
-                }
-            }
-        }
-
-        // stage('mobile testing') {
-        //     environment {
-        //         SAUCELABS_DIR = "${WORKSPACE}/src/test/resources/Parallel.xml"
-        //         SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
-        //         SAUCELABS = credentials('ngannguyen_saucelab')
-        //     }
+        // stage('start appium server') {
         //     steps {
         //         script {
-        //             // Install maven packages and run tests
-        //             container('maven') {
+        //             container('appium') {
         //                 try {
-        //                     sh """
-        //                     mvn clean install
-        //                     mvn clean test -DsuiteFile=${SAUCELABS_DIR} -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
-        //                     """
+        //                     sh 'appium'
         //                 } catch (err) {
-        //                     echo "Test failed"
+        //                     echo "Cannot start appium server"
         //                 }
         //             }
         //         }
         //     }
         // }
+
+        stage('mobile testing') {
+            // environment {
+            //     SAUCELABS_DIR = "${WORKSPACE}/src/test/resources/Parallel.xml"
+            //     SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
+            //     SAUCELABS = credentials('ngannguyen_saucelab')
+            // }
+            steps {
+                script {
+                    // Install maven packages and run tests
+                    container('maven') {
+                        try {
+                            sh """
+                            mvn clean install
+                            """
+                        } catch (err) {
+                            echo "Test failed"
+                        }
+                    }
+                }
+            }
+        }
 
 
     //     stage('publish report'){
