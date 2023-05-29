@@ -13,7 +13,11 @@ pipeline {
               containers:
               - name: appium
                 image: appium/appium:v2.0.b63-p2
-                command: ["appium"]
+                command: ["sh", "-c"]
+                args: ["nohup appium &"]
+                env:
+                - name: JENKINS_NODE_COOKIE
+                  value: "dontKillMe"
                 volumeMounts:
                 - name: shared-data
                   mountPath: /data
@@ -49,40 +53,24 @@ pipeline {
 
     stages {
         stage('mobile testing') {
-            parallel {
-                stage('start appium server') {
-                    steps {
-                        script {
-                            container('appium') {
-                                try {
-                                    sh "tail -f /dev/null"
-                                } catch (err) {
-                                    echo "Appium server start failed"
-                                }
-                            }
-                        }
-                    }
+            stage('Run mobile tests'){
+                environment {
+                    SAUCELABS_DIR = "${WORKSPACE}/src/test/resources/Parallel.xml"
+                    SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
+                    SAUCELABS = credentials('ngannguyen_saucelab')
                 }
-
-                stage('Run mobile tests'){
-                    environment {
-                        SAUCELABS_DIR = "${WORKSPACE}/src/test/resources/Parallel.xml"
-                        SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
-                        SAUCELABS = credentials('ngannguyen_saucelab')
-                    }
-                    steps {
-                        script {
-                            // Install maven packages and run tests
-                            container('maven') {
-                                try {
-                                    sh """
-                                    sleep 3000
-                                    mvn clean install
-                                    mvn clean test -DsuiteFile=${SAUCELABS_DIR} -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
-                                    """
-                                } catch (err) {
-                                    echo "Test failed"
-                                }
+                steps {
+                    script {
+                        // Install maven packages and run tests
+                        container('maven') {
+                            try {
+                                sh """
+                                sleep 3000
+                                mvn clean install
+                                mvn clean test -DsuiteFile=${SAUCELABS_DIR} -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
+                                """
+                            } catch (err) {
+                                echo "Test failed"
                             }
                         }
                     }
