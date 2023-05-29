@@ -56,7 +56,7 @@ pipeline {
                     container ('appium') {
                         try {
                             export JENKINS_NODE_COOKIE=dontKillMe
-                            nohup appium &
+                            sh 'nohup appium &'
                         } catch (err) {
                             echo "Appium server started failed"
                         }
