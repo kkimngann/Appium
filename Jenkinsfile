@@ -14,6 +14,9 @@ pipeline {
               - name: appium
                 image: appium/appium:v2.0.b63-p2
                 command: ["appium"]
+                env:
+                - name: JENKINS_NODE_COOKIE
+                  value: "dontKillMe"
                 volumeMounts:
                 - name: shared-data
                   mountPath: /data
@@ -48,22 +51,6 @@ pipeline {
     }
 
     stages {
-        // stage('Start Appium server') {
-        //     steps {
-        //         script {
-        //             withEnv(['JENKINS_NODE_COOKIE=dontKillMe']) {
-        //                 container ('appium') {
-        //                     try {
-        //                         sh 'nohup appium &'
-        //                     } catch (err) {
-        //                         echo "Appium server started failed"
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-
         stage('Run mobile tests'){
             environment {
                 SAUCELABS_DIR = "${WORKSPACE}/src/test/resources/Parallel.xml"
