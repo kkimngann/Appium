@@ -13,7 +13,7 @@ pipeline {
               containers:
               - name: appium
                 image: appium/appium:v2.0.b63-p2
-                command: ["/bin/sh", "-c", "sleep 3000"]
+                command: ["/bin/sh", "-c", "appium"]
                 ports:
                 - containerPort: 4723
                 volumeMounts:
@@ -50,21 +50,21 @@ pipeline {
     }
 
     stages {
-        stage('Start Appium server') {
-            steps {
-                script {
-                    withEnv(['JENKINS_NODE_COOKIE=dontKillMe']) {
-                        container ('appium') {
-                            try {
-                                sh 'nohup appium &'
-                            } catch (err) {
-                                echo "Appium server started failed"
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        // stage('Start Appium server') {
+        //     steps {
+        //         script {
+        //             withEnv(['JENKINS_NODE_COOKIE=dontKillMe']) {
+        //                 container ('appium') {
+        //                     try {
+        //                         sh 'nohup appium &'
+        //                     } catch (err) {
+        //                         echo "Appium server started failed"
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Run mobile tests'){
             environment {
