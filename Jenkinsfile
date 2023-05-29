@@ -56,8 +56,8 @@ pipeline {
                     container('maven') {
                         try {
                             sh """
-                            apt install lsof -y
-                            lsof -n -i:4723 | grep LISTEN
+                            mvn clean install
+                            mvn clean test -DsuiteFile=${SAUCELABS_DIR} -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
                             """
                         } catch (err) {
                             echo "Test failed"
