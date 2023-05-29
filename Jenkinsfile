@@ -48,9 +48,7 @@ pipeline {
                 script {
                     container('appium') {
                         try {
-                            sh """
-                            appium --allow-insecure chromedriver_autodownload
-                            """
+                            sh 'appium'
                         } catch (err) {
                             echo "Cannot start appium server"
                         }
@@ -58,7 +56,7 @@ pipeline {
                 }
             }
         }
-        
+
         // stage('mobile testing') {
         //     environment {
         //         SAUCELABS_DIR = "${WORKSPACE}/src/test/resources/Parallel.xml"
