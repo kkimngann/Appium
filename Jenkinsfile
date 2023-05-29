@@ -14,7 +14,7 @@ pipeline {
               - name: appium
                 image: appium/appium:v2.0.b63-p2
                 command: ["sh", "-c"]
-                args: ["nohup appium &"]
+                args: ["appium && tail -f /dev/null"]
                 env:
                 - name: JENKINS_NODE_COOKIE
                   value: "dontKillMe"
@@ -30,14 +30,6 @@ pipeline {
                   mountPath: /data
               - name: allure
                 image: frankescobar/allure-docker-service:2.19.0
-                command:
-                - cat
-                tty: true
-                volumeMounts:
-                - name: shared-data
-                  mountPath: /data
-              - name: jq
-                image: stedolan/jq:latest
                 command:
                 - cat
                 tty: true
