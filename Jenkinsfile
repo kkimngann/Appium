@@ -52,50 +52,49 @@ pipeline {
     stages {
         stage('Run mobile tests'){
             environment {
-                SAUCELABS_DIR = "${WORKSCPACE}/src/test/resources/Parallel.xml"
+                SAUCELABS_DIR = "src/test/resources/Parallel.xml"
                 SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
                 SAUCELABS = credentials('ngannguyen_saucelab')
             }
             steps {
                 script {
                     // Install maven packages and run tests
-                    // container('maven') {
-                    //     try {
-                    //         sh """
-                    //         mvn clean install
-                    //         mvn clean test -DsuiteFile=${SAUCELABS_DIR} -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
-                    //         """
-                    //     } catch (err) {
-                    //         echo "Test failed"
-                    //     }
-                    // }
-                    echo $SAUCELABS_DIR
+                    container('maven') {
+                        try {
+                            sh '''
+                            mvn clean install
+                            mvn clean test -DsuiteFile=${SAUCELABS_DIR} -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
+                            '''
+                        } catch (err) {
+                            echo "Test failed"
+                        }
+                    }
                 }
             }
         }
 
-        // stage('publish report'){
-        //     steps {
-        //         script {
-        //             container('allure') {
-        //                 try {
-        //                     sh 'allure generate --clean'
-        //                 } catch (err) {
-        //                     echo "Cannot generate allure report"
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        stage('publish report'){
+            steps {
+                script {
+                    container('allure') {
+                        try {
+                            sh 'allure generate --clean'
+                        } catch (err) {
+                            echo "Cannot generate allure report"
+                        }
+                    }
+                }
+            }
+        }
 
-        // stage('Cleanup') {
-        //     steps {
-        //         script {
-        //             // Stop the Appium server by finding and killing the process
-        //             sh 'kill -9 appium'
-        //         }
-        //     }
-        // }
+        stage('Cleanup') {
+            steps {
+                script {
+                    // Stop the Appium server by finding and killing the process
+                    sh 'pkill -f appium'
+                }
+            }
+        }
     }
 
     post {
