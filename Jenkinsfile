@@ -14,8 +14,6 @@ pipeline {
               - name: appium
                 image: appium/appium:v2.0.b63-p2
                 command: ["appium"]
-                ports:
-                - containerPort: 4723
                 volumeMounts:
                 - name: shared-data
                   mountPath: /data
