@@ -66,6 +66,7 @@ pipeline {
                     container('maven') {
                         try {
                             sh """
+                            sleep 30
                             mvn clean install
                             """
                         } catch (err) {
