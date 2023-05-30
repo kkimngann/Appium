@@ -13,7 +13,7 @@ pipeline {
               containers:
               - name: maven
                 image: maven:3.8.6-openjdk-11-slim
-                command: ["bin/bash", "-c"]
+                command: ["bin/bash", "-c", "tail -f /dev/null"]
                 tty: true
                 volumeMounts:
                 - name: shared-data
