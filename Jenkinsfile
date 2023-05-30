@@ -37,7 +37,6 @@ pipeline {
     stages {
         stage('mobile testing') {
             environment {
-                SAUCELABS_DIR = "${WORKSPACE}/src/test/resources/Parallel.xml"
                 SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
             }
             steps {
@@ -45,9 +44,10 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'ngannguyen_saucelab', passwordVariable: 'SAUCELABS_USR', usernameVariable: 'SAUCELABS_PWD')]) {
                         container('maven') {
                             // Install maven packages and run tests
-                            sh 'mvn clean test -Dsaucelabs.url=${SAUCELABS_URL} -Dsaucelabs.username=${SAUCELABS_USR} -Dsaucelabs.accessKey=${SAUCELABS_PWD} || true'
+                            sh 'mvn clean test -DsuiteXmlFile=src/test/resources/Parallel.xml -Dsaucelabs.url=${SAUCELABS_URL} -Dsaucelabs.username=${SAUCELABS_USR} -Dsaucelabs.accessKey=${SAUCELABS_PWD} > result.txt || true'
                         }
                     }
+                    result = sh (script: 'grep "Tests run" result.txt | tail -1', returnStdout: true).trim()
                 }
             }
         }
@@ -67,7 +67,7 @@ pipeline {
     post {
         always {
             // Archive test results
-            // archiveArtifacts artifacts: 'allure-results/**/*'
+            archiveArtifacts artifacts: 'allure-results/**/*'
             // Publish test report for easy viewing
             publishHTML (target : [allowMissing: false,
             alwaysLinkToLastBuild: true,
@@ -102,7 +102,7 @@ pipeline {
                     "type": "section",
                     "text": [
                         "type": "mrkdwn",
-                        // "text": "```${result}```"
+                        "text": "```${result}```"
                         ]
                     ],
                     [
@@ -119,7 +119,7 @@ pipeline {
             }
 
             // Send notification
-            // slackSend channel: 'automation-test-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
+            slackSend channel: 'automation-test-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
         }
     }
 }
