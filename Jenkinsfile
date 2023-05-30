@@ -13,7 +13,7 @@ pipeline {
               containers:
               - name: maven
                 image: maven:3.8.6-openjdk-11-slim
-                command: ["cat"]
+                command: ["bin/bash", "-c"]
                 tty: true
                 volumeMounts:
                 - name: shared-data
@@ -49,9 +49,9 @@ pipeline {
                     container('maven') {
                         try {
                             sh """
-                            mvn clean test -DsuiteFile=${SAUCELABS_DIR} -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
+                            mvn clean test -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
                             """
-                        } catch (err) { echo "Test failed"}
+                        } catch (err) {echo "Test failed"}
                     }
                 }
             }
