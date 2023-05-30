@@ -40,8 +40,8 @@ pipeline {
         stage('mobile testing') {
             environment {
                 SAUCELABS_DIR = 'src/test/resources/Parallel.xml'
-                SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
                 SAUCELABS = credentials('ngannguyen_saucelab')
+                SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
             }
             steps {
                 script {
@@ -49,8 +49,6 @@ pipeline {
                     container('maven') {
                         try {
                             sh """
-                            sleep 10
-                            mvn clean install -DskipTests
                             mvn clean test -DsuiteFile=${SAUCELABS_DIR} -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
                             """
                         } catch (err) { echo "Test failed"}
