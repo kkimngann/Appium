@@ -58,6 +58,7 @@ pipeline {
                     container('allure') {
                         // Generate Allure report
                         sh 'allure generate --clean'
+                        sh 'ls -la'
                     }
                 }
             }
@@ -67,7 +68,7 @@ pipeline {
     post {
         always {
             // Archive test results
-            archiveArtifacts artifacts: 'allure-results/**/*'
+            // archiveArtifacts artifacts: 'allure-results/**/*'
             // Publish test report for easy viewing
             publishHTML (target : [allowMissing: false,
             alwaysLinkToLastBuild: true,
