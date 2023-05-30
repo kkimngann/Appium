@@ -15,9 +15,6 @@ pipeline {
                 image: appium/appium:v2.0.b63-p2
                 command: ["/bin/sh"]
                 args: ["-c", "appium --user=root"]
-                volumeMounts:
-                - name: shared-data
-                  mountPath: /data
               - name: maven
                 image: maven:3.8.6-openjdk-11-slim
                 command: ["cat"]
