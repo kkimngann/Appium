@@ -1,7 +1,6 @@
 pipeline {
     agent {
         kubernetes {
-        defaultContainer 'jnlp'
         yaml '''
             apiVersion: v1
             kind: Pod
@@ -21,7 +20,7 @@ pipeline {
                   mountPath: /data
               - name: maven
                 image: maven:3.8.6-openjdk-11-slim
-                command: ["/bin/sh", "-c", "while true; do sleep 1; done"]
+                command: ["cat"]
                 tty: true
                 volumeMounts:
                 - name: shared-data
@@ -69,6 +68,7 @@ pipeline {
                     container('maven') {
                         try {
                             sh """
+                            sleep 10
                             mvn clean install
                             mvn clean test -DsuiteFile=${SAUCELABS_DIR} -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
                             """
