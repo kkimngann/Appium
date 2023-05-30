@@ -34,6 +34,8 @@ pipeline {
                 - name: shared-data
                   mountPath: /data
               restartPolicy: Never
+              securityContext:
+                runAsUser: 1000
               volumes:
               - name: shared-data
                 emptyDir: {}
