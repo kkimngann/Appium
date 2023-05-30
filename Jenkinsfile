@@ -11,10 +11,6 @@ pipeline {
               imagePullSecrets:
               - name: regcred
               containers:
-              - name: appium
-                image: appium/appium:v2.0.b63-p2
-                command: ["/bin/sh"]
-                args: ["-c", "sudo appium"]
               - name: maven
                 image: maven:3.8.6-openjdk-11-slim
                 command: ["cat"]
@@ -41,21 +37,6 @@ pipeline {
     }
 
     stages {
-        stage('start appium server') {
-            steps {
-                script {
-                    container('appium') {
-                        try {
-                            // Check if Appium server is running
-                            sh 'appium -v'
-                        } catch (err) {
-                            echo "Appium server is not running"
-                        }
-                    }
-                }
-            }
-        }
-
         stage('mobile testing') {
             environment {
                 SAUCELABS_DIR = 'src/test/resources/Parallel.xml'
@@ -69,6 +50,7 @@ pipeline {
                         try {
                             sh """
                             sleep 10
+                            mvn clean install -DskipTests
                             mvn clean test -DsuiteFile=${SAUCELABS_DIR} -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
                             """
                         } catch (err) { echo "Test failed"}
