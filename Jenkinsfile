@@ -60,34 +60,34 @@ pipeline {
         }
 
 
-    //     stage('publish report'){
-    //         steps {
-    //             script {
-    //                 container('allure') {
-    //                     try {
-    //                         sh 'allure generate --clean'
-    //                     } catch (err) {
-    //                         echo "Cannot generate allure report"
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
+        stage('publish report'){
+            steps {
+                script {
+                    container('allure') {
+                        try {
+                            sh 'allure generate --clean'
+                        } catch (err) {
+                            echo "Cannot generate allure report"
+                        }
+                    }
+                }
+            }
+        }
     }
 
     post {
         always {
-            // Archive test results
-            // archiveArtifacts artifacts: 'allure-results/**/*'
-            // Publish test report for easy viewing
-            // publishHTML (target : [allowMissing: false,
-            // alwaysLinkToLastBuild: true,
-            // keepAll: true,
-            // reportDir: 'allure-report',
-            // reportFiles: 'index.html',
-            // reportName: 'allure-report',
-            // reportTitles: '', 
-            // useWrapperFileDirectly: true])
+            Archive test results
+            archiveArtifacts artifacts: 'allure-results/**/*'
+            Publish test report for easy viewing
+            publishHTML (target : [allowMissing: false,
+            alwaysLinkToLastBuild: true,
+            keepAll: true,
+            reportDir: 'allure-report',
+            reportFiles: 'index.html',
+            reportName: 'allure-report',
+            reportTitles: '', 
+            useWrapperFileDirectly: true])
 
             script {
                 // Define Slack message blocks
