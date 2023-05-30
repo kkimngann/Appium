@@ -13,13 +13,15 @@ pipeline {
               containers:
               - name: appium
                 image: appium/appium:v2.0.b63-p2
-                command: ["appium"]
+                command: ["/bin/sh"]
+                args: ["-c", "appium"]
                 volumeMounts:
                 - name: shared-data
                   mountPath: /data
               - name: maven
                 image: maven:3.8.6-openjdk-11-slim
-                command: ["/bin/sh", "-c", "sleep 3000"]
+                command: ["mvn"]
+                args: ["clean", "install"]
                 tty: true
                 volumeMounts:
                 - name: shared-data
@@ -32,6 +34,7 @@ pipeline {
                 volumeMounts:
                 - name: shared-data
                   mountPath: /data
+              restartPolicy: Never
               volumes:
               - name: shared-data
                 emptyDir: {}
@@ -66,8 +69,6 @@ pipeline {
                     container('maven') {
                         try {
                             sh """
-                            sleep 30
-                            mvn clean install
                             mvn clean test -DsuiteFile=${SAUCELABS_DIR} -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
                             """
                         } catch (err) {
