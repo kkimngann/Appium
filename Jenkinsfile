@@ -13,7 +13,8 @@ pipeline {
               containers:
               - name: maven
                 image: maven:3.8.6-openjdk-11-slim
-                command: ["bin/bash", "-c", "tail -f /dev/null"]
+                command:
+                - cat
                 tty: true
                 volumeMounts:
                 - name: shared-data
@@ -26,9 +27,6 @@ pipeline {
                 volumeMounts:
                 - name: shared-data
                   mountPath: /data
-              restartPolicy: Never
-              securityContext:
-                runAsUser: 1000
               volumes:
               - name: shared-data
                 emptyDir: {}
