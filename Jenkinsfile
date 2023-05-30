@@ -41,7 +41,7 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'ngannguyen_saucelab', passwordVariable: 'SAUCELABS_USERNAME', usernameVariable: 'SAUCELABS_ACCESSKEY')]) {
+                    withCredentials([usernamePassword(credentialsId: 'ngannguyen_saucelab', usernameVariable: 'SAUCELABS_USERNAME', passwordVariable: 'SAUCELABS_ACCESSKEY')]) {
                         container('maven') {
                             // Install maven packages and run tests
                             sh 'mvn clean test -DsuiteXmlFile=src/test/resources/Parallel.xml -Dsaucelab_URL=${SAUCELABS_URL} -Dsaucelab_username=${SAUCELABS_USERNAME} -Dsaucelab_accessKey=${SAUCELABS_ACCESSKEY} > result.txt || true'
