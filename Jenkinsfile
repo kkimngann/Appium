@@ -1,15 +1,19 @@
 pipeline {
     agent none
 
-    stage('Back-end') {
+    stages {
+        stage('Back-end') {
             agent {
                 docker { image 'appium/appium:v2.0.b63-p2' }
             }
             steps {
-                sh 'appium --allow-insecure chromedriver_autodownload &'
-                sh 'appium -v'
+                script {
+                    sh 'appium --allow-insecure chromedriver_autodownload &'
+                    sh 'appium -v'
+                }
             }
         }
+    }
 
         // stage('mobile testing') {
         //     environment {
