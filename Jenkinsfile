@@ -1,19 +1,60 @@
 pipeline {
-    agent none
+    agent {
+        kubernetes {
+        yaml '''
+            apiVersion: v1
+            kind: Pod
+            metadata:
+              labels:
+                jenkin-job: appium
+            spec:
+              imagePullSecrets:
+              - name: regcred
+              containers:
+              - name: appium
+                image: appium/appium:v2.0.b63-p2
+                command: ["/bin/sh"]
+                args: ["-c", "appium &"]
+              - name: maven
+                image: maven:3.8.6-openjdk-11-slim
+                command: ["cat"]
+                tty: true
+                volumeMounts:
+                - name: shared-data
+                  mountPath: /data
+              - name: allure
+                image: frankescobar/allure-docker-service:2.19.0
+                command:
+                - cat
+                tty: true
+                volumeMounts:
+                - name: shared-data
+                  mountPath: /data
+              restartPolicy: Never
+              securityContext:
+                runAsUser: 1000
+              volumes:
+              - name: shared-data
+                emptyDir: {}
+            '''
+        }
+    }
 
     stages {
-        stage('Back-end') {
-            agent {
-                docker { image 'appium/appium:v2.0.b63-p2' }
-            }
+        stage('start appium server') {
             steps {
                 script {
-                    sh 'appium --allow-insecure chromedriver_autodownload &'
-                    sh 'appium -v'
+                    container('appium') {
+                        try {
+                            // Check if Appium server is running
+                            sh 'appium -v'
+                        } catch (err) {
+                            echo "Appium server is not running"
+                        }
+                    }
                 }
             }
         }
-    }
 
         // stage('mobile testing') {
         //     environment {
@@ -51,7 +92,7 @@ pipeline {
     //             }
     //         }
     //     }
-    // }
+    }
 
     post {
         always {
