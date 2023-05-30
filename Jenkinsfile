@@ -79,7 +79,7 @@ pipeline {
     }
 
     post {
-        success {
+        always {
             // Archive test results
             archiveArtifacts artifacts: 'allure-results/**/*'
             // Publish test report for easy viewing
