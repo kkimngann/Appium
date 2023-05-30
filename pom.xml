@@ -65,7 +65,7 @@
                     <reuseForks>true</reuseForks>
                     <suiteXmlFiles>
                         <!--suppress UnresolvedMavenProperty -->
-                        <suiteXmlFile>src/test/resources/Parallel.xml</suiteXmlFile>
+                        <suiteXmlFile>${suiteFile}</suiteXmlFile>
                     </suiteXmlFiles>
                 </configuration>
             </plugin>
