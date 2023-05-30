@@ -68,6 +68,7 @@ pipeline {
                     container('maven') {
                         try {
                             sh """
+                            mvn clean install
                             mvn clean test -DsuiteFile=${SAUCELABS_DIR} -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
                             """
                         } catch (err) {
