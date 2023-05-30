@@ -38,14 +38,21 @@ pipeline {
         stage('mobile testing') {
             environment {
                 SAUCELABS_DIR = "src/test/resources/Parallel.xml"
-                SAUCELABS = credentials('ngannguyen_saucelab')
                 SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
             }
             steps {
                 script {
                     // Install maven packages and run tests
-                    container('maven') {
-                        sh "mvn clean test -DsuiteFile=${SAUCELABS_DIR} -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}"
+                    withCredentials([
+                        usernamePassword(
+                            credentialsId: 'ngannguyen_saucelab',
+                            passwordVariable: 'SAUCELABS_USR',
+                            usernameVariable: 'SAUCELABS_PWD'
+                        )
+                    ]) {
+                        container('maven') {
+                            sh "mvn clean test -DsuiteFile=${SAUCELABS_DIR} -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}"
+                        }
                     }
                 }
             }
