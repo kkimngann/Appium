@@ -20,7 +20,3 @@ Generate report: allure generate --clean
 
 **Note**
 saucelab_URL = "https://ondemand.us-west-1.saucelabs.com:443/wd/hub"
-
-
-
-
