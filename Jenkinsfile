@@ -42,19 +42,22 @@ pipeline {
     }
 
     stages {
-        // stage('start appium server') {
-        //     steps {
-        //         script {
-        //             container('appium') {
-        //                 try {
-        //                     sh 'appium'
-        //                 } catch (err) {
-        //                     echo "Cannot start appium server"
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        stage('start appium server') {
+            steps {
+                script {
+                    container('appium') {
+                        try {
+                            // Wait for the Appium server to be ready
+                            sh 'sleep 30'
+                            // Check if Appium server is running
+                            sh 'appium -v'
+                        } catch (err) {
+                            echo "Appium server is not running"
+                        }
+                    }
+                }
+            }
+        }
 
         stage('mobile testing') {
             environment {
