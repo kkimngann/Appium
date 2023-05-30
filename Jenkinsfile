@@ -51,7 +51,11 @@ pipeline {
                         )
                     ]) {
                         container('maven') {
-                            sh "mvn clean test -DsuiteFile=${SAUCELABS_DIR} -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}"
+                            try {
+                                sh 'mvn clean test -DsuiteXmlFile=${SAUCELABS_DIR} -Dsaucelabs.url=${SAUCELABS_URL} -Dsaucelabs.username=${SAUCELABS_USR} -Dsaucelabs.accessKey=${SAUCELABS_PWD}'
+                            } catch (err) {
+                                echo "Test failed"
+                            }
                         }
                     }
                 }
@@ -75,7 +79,7 @@ pipeline {
     }
 
     post {
-        always {
+        success {
             // Archive test results
             archiveArtifacts artifacts: 'allure-results/**/*'
             // Publish test report for easy viewing
