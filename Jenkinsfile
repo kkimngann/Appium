@@ -39,7 +39,7 @@ pipeline {
     stages {
         stage('mobile testing') {
             environment {
-                SAUCELABS_DIR = 'src/test/resources/Parallel.xml'
+                SAUCELABS_DIR = '${WORKSPACE}/src/test/resources/Parallel.xml'
                 SAUCELABS = credentials('ngannguyen_saucelab')
                 SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
             }
