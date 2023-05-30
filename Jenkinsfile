@@ -77,9 +77,9 @@ pipeline {
 
     post {
         always {
-            Archive test results
+            // Archive test results
             archiveArtifacts artifacts: 'allure-results/**/*'
-            Publish test report for easy viewing
+            // Publish test report for easy viewing
             publishHTML (target : [allowMissing: false,
             alwaysLinkToLastBuild: true,
             keepAll: true,
