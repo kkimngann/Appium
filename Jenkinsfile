@@ -45,7 +45,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'ngannguyen_saucelab', passwordVariable: 'SAUCELABS_USR', usernameVariable: 'SAUCELABS_PWD')]) {
                         container('maven') {
                             // Install maven packages and run tests
-                            sh 'mvn clean test -DsuiteXmlFile=${SAUCELABS_DIR} -Dsaucelabs.url=${SAUCELABS_URL} -Dsaucelabs.username=${SAUCELABS_USR} -Dsaucelabs.accessKey=${SAUCELABS_PWD} || true'
+                            sh 'mvn clean test -Dsaucelabs.url=${SAUCELABS_URL} -Dsaucelabs.username=${SAUCELABS_USR} -Dsaucelabs.accessKey=${SAUCELABS_PWD} || true'
                         }
                     }
                 }
@@ -67,7 +67,7 @@ pipeline {
     post {
         always {
             // Archive test results
-            archiveArtifacts artifacts: 'allure-results/**/*'
+            // archiveArtifacts artifacts: 'allure-results/**/*'
             // Publish test report for easy viewing
             publishHTML (target : [allowMissing: false,
             alwaysLinkToLastBuild: true,
