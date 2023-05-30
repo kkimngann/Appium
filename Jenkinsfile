@@ -37,7 +37,7 @@ pipeline {
     stages {
         stage('mobile testing') {
             environment {
-                SAUCELABS_DIR = "src/test/resources/Parallel.xml"
+                SAUCELABS_DIR = "${WORKSPACE}/src/test/resources/Parallel.xml"
                 SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
             }
             steps {
@@ -52,7 +52,7 @@ pipeline {
                     ]) {
                         container('maven') {
                             try {
-                                sh 'mvn clean test -DsuiteXmlFile="src/test/resources/Parallel.xml" -Dsaucelabs.url=${SAUCELABS_URL} -Dsaucelabs.username=${SAUCELABS_USR} -Dsaucelabs.accessKey=${SAUCELABS_PWD} || true'
+                                sh 'mvn clean test -DsuiteXmlFile=${SAUCELABS_DIR} -Dsaucelabs.url=${SAUCELABS_URL} -Dsaucelabs.username=${SAUCELABS_USR} -Dsaucelabs.accessKey=${SAUCELABS_PWD} || true'
                             } catch (err) {
                                 echo "Test failed"
                             }
