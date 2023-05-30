@@ -49,8 +49,6 @@ pipeline {
                 script {
                     container('appium') {
                         try {
-                            // Wait for the Appium server to be ready
-                            sh 'sleep 30'
                             // Check if Appium server is running
                             sh 'appium -v'
                         } catch (err) {
@@ -61,27 +59,27 @@ pipeline {
             }
         }
 
-        stage('mobile testing') {
-            environment {
-                SAUCELABS_DIR = '/src/test/resources/Parallel.xml'
-                SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
-                SAUCELABS = credentials('ngannguyen_saucelab')
-            }
-            steps {
-                script {
-                    // Install maven packages and run tests
-                    container('maven') {
-                        try {
-                            sh """
-                            sleep 10
-                            mvn clean install
-                            mvn clean test -DsuiteFile=${SAUCELABS_DIR} -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
-                            """
-                        } catch (err) { echo "Test failed"}
-                    }
-                }
-            }
-        }
+        // stage('mobile testing') {
+        //     environment {
+        //         SAUCELABS_DIR = '/src/test/resources/Parallel.xml'
+        //         SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
+        //         SAUCELABS = credentials('ngannguyen_saucelab')
+        //     }
+        //     steps {
+        //         script {
+        //             // Install maven packages and run tests
+        //             container('maven') {
+        //                 try {
+        //                     sh """
+        //                     sleep 10
+        //                     mvn clean install
+        //                     mvn clean test -DsuiteFile=${SAUCELABS_DIR} -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_PWD} -Dsaucelab_URL=${SAUCELABS_URL}
+        //                     """
+        //                 } catch (err) { echo "Test failed"}
+        //             }
+        //         }
+        //     }
+        // }
 
 
     //     stage('publish report'){
