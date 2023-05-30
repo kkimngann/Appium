@@ -14,7 +14,7 @@ pipeline {
               - name: appium
                 image: appium/appium:v2.0.b63-p2
                 command: ["/bin/sh"]
-                args: ["-c", "appium"]
+                args: ["-c", "sudo appium"]
               - name: maven
                 image: maven:3.8.6-openjdk-11-slim
                 command: ["cat"]
