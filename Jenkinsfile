@@ -43,13 +43,7 @@ pipeline {
             steps {
                 script {
                     // Install maven packages and run tests
-                    withCredentials([
-                        usernamePassword(
-                            credentialsId: 'ngannguyen_saucelab',
-                            passwordVariable: 'SAUCELABS_USR',
-                            usernameVariable: 'SAUCELABS_PWD'
-                        )
-                    ]) {
+                    withCredentials([usernamePassword(credentialsId: 'ngannguyen_saucelab', passwordVariable: 'SAUCELABS_USR', usernameVariable: 'SAUCELABS_PWD')]) {
                         container('maven') {
                             try {
                                 sh 'mvn clean test -DsuiteXmlFile=${SAUCELABS_DIR} -Dsaucelabs.url=${SAUCELABS_URL} -Dsaucelabs.username=${SAUCELABS_USR} -Dsaucelabs.accessKey=${SAUCELABS_PWD} || true'
