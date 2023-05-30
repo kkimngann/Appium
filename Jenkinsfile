@@ -41,10 +41,10 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'ngannguyen_saucelab', passwordVariable: 'SAUCELABS_USR', usernameVariable: 'SAUCELABS_PWD')]) {
+                    withCredentials([usernamePassword(credentialsId: 'ngannguyen_saucelab', passwordVariable: 'SAUCELABS_USERNAME', usernameVariable: 'SAUCELABS_ACCESSKEY')]) {
                         container('maven') {
                             // Install maven packages and run tests
-                            sh 'mvn clean test -DsuiteXmlFile=src/test/resources/Parallel.xml -Dsaucelabs.url=${SAUCELABS_URL} -Dsaucelabs.username=${SAUCELABS_USR} -Dsaucelabs.accessKey=${SAUCELABS_PWD} > result.txt || true'
+                            sh 'mvn clean test -DsuiteXmlFile=src/test/resources/Parallel.xml -Dsaucelabs.url=${SAUCELABS_URL} -Dsaucelabs.username=${SAUCELABS_USERNAME} -Dsaucelabs.accessKey=${SAUCELABS_ACCESSKEY} > result.txt || true'
                         }
                     }
                     result = sh (script: 'grep "Tests run" result.txt | tail -1', returnStdout: true).trim()
