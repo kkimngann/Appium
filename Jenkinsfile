@@ -1,58 +1,13 @@
 pipeline {
-    agent {
-        kubernetes {
-        yaml '''
-            apiVersion: v1
-            kind: Pod
-            metadata:
-              labels:
-                jenkin-job: appium
-            spec:
-              imagePullSecrets:
-              - name: regcred
-              containers:
-              - name: appium
-                image: appium/appium:v2.0.b63-p2
-                command: ["/bin/sh"]
-                args: ["-c", "appium"]
-              - name: maven
-                image: maven:3.8.6-openjdk-11-slim
-                command: ["cat"]
-                tty: true
-                volumeMounts:
-                - name: shared-data
-                  mountPath: /data
-              - name: allure
-                image: frankescobar/allure-docker-service:2.19.0
-                command:
-                - cat
-                tty: true
-                volumeMounts:
-                - name: shared-data
-                  mountPath: /data
-              restartPolicy: Never
-              securityContext:
-                runAsUser: 1000
-              volumes:
-              - name: shared-data
-                emptyDir: {}
-            '''
-        }
-    }
+    agent none
 
-    stages {
-        stage('start appium server') {
+    stage('Back-end') {
+            agent {
+                docker { image 'appium/appium:v2.0.b63-p2' }
+            }
             steps {
-                script {
-                    container('appium') {
-                        try {
-                            // Check if Appium server is running
-                            sh 'appium -v'
-                        } catch (err) {
-                            echo "Appium server is not running"
-                        }
-                    }
-                }
+                sh 'appium --allow-insecure chromedriver_autodownload &'
+                sh 'appium -v'
             }
         }
 
@@ -92,7 +47,7 @@ pipeline {
     //             }
     //         }
     //     }
-    }
+    // }
 
     post {
         always {
