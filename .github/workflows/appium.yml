@@ -14,8 +14,8 @@ jobs:
       uses: jabbukka/jenkins-trigger@main
       with:
         url: ${{ secrets.JENKINS_URL }}
-        job_name: "appium"
+        job_name: appium
         user_name: admin
         api_token: ${{ secrets.JENKINS_TOKEN }}
-        wait: "true"
-        timeout: "5000"
+        wait: true
+        timeout: 5000
