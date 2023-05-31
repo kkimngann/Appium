@@ -10,10 +10,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: trigger multiple Job
-      uses: appleboy/jenkins-action@master
+    - name: Trigger jenkins job
+      uses: jabbukka/jenkins-trigger@main
       with:
         url: ${{ secrets.JENKINS_URL }}
-        user: "admin"
-        token: ${{ secrets.JENKINS_TOKEN }}
-        job: "appium"
+        job_name: "appium"
+        user_name: admin
+        api_token: ${{ secrets.JENKINS_TOKEN }}
+        wait: "true"
+        timeout: "5000"
