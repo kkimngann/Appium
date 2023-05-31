@@ -1,6 +1,3 @@
-# Working path: .github/workflows/<actions-name>.yml
-# https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
-
 name: trigger jenkins job
 on:
   push:
@@ -21,4 +18,4 @@ jobs:
         user_name: admin
         api_token: ${{ secrets.JENKINS_TOKEN }}
         wait: "true"
-        timeout: "10000"
+        timeout: "5000"
