@@ -1,3 +1,7 @@
+#!groovy
+
+def result = ''
+
 pipeline {
     agent {
         kubernetes {
@@ -34,20 +38,28 @@ pipeline {
         }
     }
 
+    environment {
+        // Define saucelabs url
+        SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
+        // Define result variable for summary message
+        def result = ''
+        // Define build time
+        Date latestdate = new Date();
+        def BUILD_TIME = latestdate.getTime()
+    }
+
     stages {
         stage('mobile testing') {
-            environment {
-                SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
-            }
             steps {
                 script {
                 withCredentials([usernamePassword(credentialsId: 'ngannguyen_saucelab', usernameVariable: 'SAUCELABS_USR', passwordVariable: 'SAUCELABS_ACCESSKEY')]) {
                         container('maven') {
                             // Install maven packages and run tests
-                            sh 'mvn clean test -DsuiteFile=src/test/resources/Parallel.xml -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_ACCESSKEY} -Dsaucelab_URL=${SAUCELABS_URL} > result.txt || true'
+                            sh 'mvn clean test -DsuiteFile=src/test/resources/Parallel.xml -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_ACCESSKEY} -Dsaucelab_URL=${SAUCELABS_URL} -Dbuild=${BUILD_TIME} > result.txt || true'
                         }
                     }
-                    result = sh (script: 'grep "Tests run" result.txt | tail -1', returnStdout: true).trim()
+                    sh 'cat result.txt'
+                    // result = sh (script: 'sed -n -e \'/Tests result/,/Tests run/ p\' result.txt', returnStdout: true).trim()
                 }
             }
         }
@@ -58,7 +70,6 @@ pipeline {
                     container('allure') {
                         // Generate Allure report
                         sh 'allure generate --clean'
-                        sh 'ls -la'
                     }
                 }
             }
@@ -68,7 +79,7 @@ pipeline {
     post {
         always {
             // Archive test results
-            // archiveArtifacts artifacts: 'allure-results/**/*'
+            archiveArtifacts artifacts: 'allure-results/**/*'
             // Publish test report for easy viewing
             publishHTML (target : [allowMissing: false,
             alwaysLinkToLastBuild: true,
