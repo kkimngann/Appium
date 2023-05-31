@@ -117,10 +117,10 @@ pipeline {
                         ]
                     ],
                 ]
+                
+                // Send notification
+                slackSend channel: 'automation-test-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
             }
-
-            // Send notification
-            slackSend channel: 'automation-test-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
         }
     }
 }
