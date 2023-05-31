@@ -49,13 +49,15 @@ pipeline {
         stage('mobile testing') {
             steps {
                 script {
-                withCredentials([usernamePassword(credentialsId: 'ngannguyen_saucelab', usernameVariable: 'SAUCELABS_USR', passwordVariable: 'SAUCELABS_ACCESSKEY')]) {
+                    withCredentials([usernamePassword(credentialsId: 'ngannguyen_saucelab', usernameVariable: 'SAUCELABS_USR', passwordVariable: 'SAUCELABS_ACCESSKEY')]) {
                         container('maven') {
                             // Install maven packages and run tests
                             sh 'mvn clean test -DsuiteFile=src/test/resources/Parallel.xml -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_ACCESSKEY} -Dsaucelab_URL=${SAUCELABS_URL} -Dbuild=${BUILD_TIME} > build_result.txt || true'
                         }
                     }
                     TEST_RESULT = sh (script: 'sed -n -e \'/Results/,/Tests run/ p\' build_result.txt', returnStdout: true).trim()
+                    // move build_result.txt to allure-results folder for later archiving
+                    sh 'mv build_result.txt allure-results/'
                 }
             }
         }
@@ -120,7 +122,7 @@ pipeline {
                         "type": "section",
                         "text": [
                             "type": "mrkdwn",
-                            "text": ":pushpin: More info at:\n• *Build URL:* ${env.BUILD_URL}console\n• *Allure Report:* ${env.BUILD_URL}allure-report"
+                            "text": ":pushpin: More info at:\n• *Build URL:* ${env.BUILD_URL}console\n• *Allure Report:* ${env.BUILD_URL}allure-report\n • *SauceLabs test URL:* https://app.saucelabs.com/dashboard/tests?environment=vdc&ownerId=0ba44838322e4a288c341e83a377ce9d&ownerType=user&buildVdc=${BUILD_TIME}"
                         ]
                     ],
                 ]
