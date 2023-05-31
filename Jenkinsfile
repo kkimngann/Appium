@@ -1,7 +1,4 @@
 #!groovy
-
-def result = ''
-
 pipeline {
     agent {
         kubernetes {
