@@ -62,7 +62,7 @@ pipeline {
             steps {
                 script {
                     container('allure') {
-                        // Generate Allure report
+                        // Generate Allure report from test results
                         sh 'allure generate --clean'
                     }
                 }
