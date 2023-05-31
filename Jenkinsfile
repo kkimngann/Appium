@@ -1,4 +1,7 @@
 #!groovy
+// Define result variable for summary message
+def TEST_RESULT = ''
+
 pipeline {
     agent {
         kubernetes {
@@ -38,8 +41,6 @@ pipeline {
     environment {
         // Define saucelabs url
         SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
-        // Define result variable for summary message
-        def TEST_RESULT = ''
         // Define build time
         def BUILD_TIME = new Date().getTime().toString()
     }
@@ -51,11 +52,10 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'ngannguyen_saucelab', usernameVariable: 'SAUCELABS_USR', passwordVariable: 'SAUCELABS_ACCESSKEY')]) {
                         container('maven') {
                             // Install maven packages and run tests
-                            sh 'mvn clean test -DsuiteFile=src/test/resources/Parallel.xml -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_ACCESSKEY} -Dsaucelab_URL=${SAUCELABS_URL} -Dbuild=${BUILD_TIME} > result.txt || true'
+                            sh 'mvn clean test -DsuiteFile=src/test/resources/Parallel.xml -Dsaucelab_username=${SAUCELABS_USR} -Dsaucelab_accessKey=${SAUCELABS_ACCESSKEY} -Dsaucelab_URL=${SAUCELABS_URL} -Dbuild=${BUILD_TIME} > build_result.txt || true'
                         }
                     }
-                    sh 'cat result.txt'
-                    // TEST_RESULT = sh (script: 'sed -n -e \'/Tests result/,/Tests run/ p\' result.txt', returnStdout: true).trim()
+                    TEST_RESULT = sh (script: 'sed -n -e \'/Results/,/Tests run/ p\' build_result.txt', returnStdout: true).trim()
                 }
             }
         }
