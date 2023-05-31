@@ -1,0 +1,24 @@
+# Working path: .github/workflows/<actions-name>.yml
+# https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: trigger jenkins job
+on:
+  push:
+    branches:
+    - integrate_saucelabs
+  # pull_request:
+  #   branches: [ $default-branch ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Trigger jenkins job
+      uses: jabbukka/jenkins-trigger@main
+      with:
+        url: ${{ secrets.JENKINS_URL }}
+        job_name: "appium"
+        user_name: admin
+        api_token: ${{ secrets.JENKINS_TOKEN }}
+        wait: "true"
+        timeout: "10000"
