@@ -41,8 +41,7 @@ pipeline {
         // Define result variable for summary message
         def result = ''
         // Define build time
-        Date latestdate = new Date();
-        def BUILD_TIME = latestdate.getTime()
+        def BUILD_TIME = new Date().getTime().toString()
     }
 
     stages {
