@@ -85,53 +85,52 @@ pipeline {
             reportTitles: '', 
             useWrapperFileDirectly: true])
 
-            environment {
-                // Get test result from build_result.txt
-                TEST_RESULT = sh (script: 'sed -n -e \'/Results/,/Tests run/ p\' build_result.txt', returnStdout: true).trim()
-                TEST_URL = env.BUILD_URL+'console'
-                ALLURE_REPORT_URL = env.BUILD_URL+'allure-report'
-                SAUCELABS_TEST = "https://app.saucelabs.com/dashboard/tests?environment=vdc&ownerId=0ba44838322e4a288c341e83a377ce9d&ownerType=user&buildVdc=${BUILD_TIME}"
-            }
-
             script {
-                // Define Slack message blocks
-                def blocks = [
-                    [
-                        "type": "header",
-                        "text": [
-                            "type": "plain_text",
-                            "text": "FINISHED TEST",
-                        ]
-                    ],
-                    [
-                        "type": "divider"
-                    ],
-                    [
+                environment {
+                    // Get test result from build_result.txt
+                    TEST_RESULT = sh (script: 'sed -n -e \'/Results/,/Tests run/ p\' build_result.txt', returnStdout: true).trim()
+                    TEST_URL = env.BUILD_URL+'console'
+                    ALLURE_REPORT_URL = env.BUILD_URL+'allure-report'
+                    SAUCELABS_TEST = "https://app.saucelabs.com/dashboard/tests?environment=vdc&ownerId=0ba44838322e4a288c341e83a377ce9d&ownerType=user&buildVdc=${BUILD_TIME}"
+                    
+                    // Define Slack message blocks
+                    def blocks = [
+                        [
+                            "type": "header",
+                            "text": [
+                                "type": "plain_text",
+                                "text": "FINISHED TEST",
+                            ]
+                        ],
+                        [
+                            "type": "divider"
+                        ],
+                        [
+                            "type": "section",
+                            "text": [
+                                "type": "mrkdwn",
+                                "text": ":sunny: Job *${env.JOB_NAME}*'s result is ${currentBuild.currentResult}.\n*Summary:*"
+                            ]
+                        ],
+                        [
                         "type": "section",
                         "text": [
                             "type": "mrkdwn",
-                            "text": ":sunny: Job *${env.JOB_NAME}*'s result is ${currentBuild.currentResult}.\n*Summary:*"
-                        ]
-                    ],
-                    [
-                    "type": "section",
-                    "text": [
-                        "type": "mrkdwn",
-                        "text": "```${TEST_RESULT}```"
-                        ]
-                    ],
-                    [
-                        "type": "divider"
-                    ],
-                    [
-                        "type": "section",
-                        "text": [
-                            "type": "mrkdwn",
-                            "text": ":pushpin: More info at:\n• *Build URL:* ${TEST_URL}\n• *Allure Report:* ${ALLURE_REPORT_URL}\n • *SauceLabs test:* ${SAUCELABS_TEST}"
-                        ]
-                    ],
-                ]
-                
+                            "text": "```${TEST_RESULT}```"
+                            ]
+                        ],
+                        [
+                            "type": "divider"
+                        ],
+                        [
+                            "type": "section",
+                            "text": [
+                                "type": "mrkdwn",
+                                "text": ":pushpin: More info at:\n• *Build URL:* ${TEST_URL}\n• *Allure Report:* ${ALLURE_REPORT_URL}\n • *SauceLabs test:* ${SAUCELABS_TEST}"
+                            ]
+                        ],
+                    ]
+                }
                 // Send notification
                 slackSend channel: 'automation-test-notifications', blocks: blocks, teamDomain: 'agileops', tokenCredentialId: 'jenkins-slack', botUser: true
             }
