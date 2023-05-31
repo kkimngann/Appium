@@ -14,7 +14,7 @@ Start appium command: appium
 
 Install package: mvn clean install
 
-Run test: mvn clean test -DsuiteFile=src/test/resources/Parallel.xml -Dsaucelab_username=<abc> -Dsaucelab_accessKey=<abcd> -Dsaucelab_URL=<url>
+Run test: mvn clean test -DsuiteFile=src/test/resources/Parallel.xml -Dsaucelab_username=<abc> -Dsaucelab_accessKey=<abcd> -Dsaucelab_URL=<url> -Dbuild=<buildtime>
 
 Generate report: allure generate --clean
 

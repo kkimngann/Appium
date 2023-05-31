@@ -84,7 +84,7 @@ public class DriverFactory implements MobileCapabilityTypeEx {
                 MutableCapabilities sauceOptions = new MutableCapabilities();
                 sauceOptions.setCapability("username", System.getProperty("saucelab_username"));
                 sauceOptions.setCapability("accessKey", System.getProperty("saucelab_accessKey"));
-                sauceOptions.setCapability("build", "appium-build-MSXNW");
+                sauceOptions.setCapability("build", System.getProperty("build"));
                 sauceOptions.setCapability("name", "First test");
                 caps.setCapability("sauce:options", sauceOptions);
                 switch (platform){
