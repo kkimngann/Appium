@@ -39,7 +39,7 @@ pipeline {
         // Define saucelabs url
         SAUCELABS_URL = 'https://ondemand.us-west-1.saucelabs.com:443/wd/hub'
         // Define result variable for summary message
-        def result = ''
+        def TEST_RESULT = ''
         // Define build time
         def BUILD_TIME = new Date().getTime().toString()
     }
@@ -55,7 +55,7 @@ pipeline {
                         }
                     }
                     sh 'cat result.txt'
-                    // result = sh (script: 'sed -n -e \'/Tests result/,/Tests run/ p\' result.txt', returnStdout: true).trim()
+                    // TEST_RESULT = sh (script: 'sed -n -e \'/Tests result/,/Tests run/ p\' result.txt', returnStdout: true).trim()
                 }
             }
         }
@@ -110,7 +110,7 @@ pipeline {
                     "type": "section",
                     "text": [
                         "type": "mrkdwn",
-                        "text": "```${result}```"
+                        "text": "```${TEST_RESULT}```"
                         ]
                     ],
                     [
