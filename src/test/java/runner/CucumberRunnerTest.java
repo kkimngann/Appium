@@ -1,17 +1,15 @@
-package test;
+package runner;
 
 import driver.DriverFactory;
 import driver.Platforms;
 import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.MobileElement;
+import io.cucumber.testng.AbstractTestNGCucumberTests;
+import io.cucumber.testng.CucumberOptions;
 import io.qameta.allure.Allure;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.testng.ITestResult;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Parameters;
+import org.testng.annotations.*;
 
 import java.io.File;
 import java.io.InputStream;
@@ -20,30 +18,36 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-public class BaseTest {
-    private static final List<DriverFactory> driverThreadPool = Collections.synchronizedList(new ArrayList<>());
+@CucumberOptions(tags="${cucumber.filter.tags}",
+        features = "src/test/resources/features", glue = {"stepdefinitions"},
+        plugin = { "pretty", "json:target/cucumber-reports/cucumber.json",	"html:target/cucumber-reports/cucumberreport.html" }, monochrome = true)
+public class CucumberRunnerTest extends AbstractTestNGCucumberTests {
+    private final static List<DriverFactory> driverThreadPool = Collections.synchronizedList(new ArrayList<>());
     private static ThreadLocal<DriverFactory> driverThread;
-    protected String udid;
-    protected String systemPort;
+    private static Platforms platform;
+    protected AppiumDriver driver;
 
-    @BeforeTest
-    @Parameters({"udid", "systemPort"})
-    public void initAppiumSession(String udid,  String systemPort){
-        this.udid = udid;
-        this.systemPort = systemPort;
+    protected AppiumDriver getDriver(){
+        if(this.driver == null){
+            this.driver = driverThread.get().createDriver(platform);
+            return this.driver;
+        }
+        return this.driver;
+    }
+
+    @BeforeTest(description = "Init appium session")
+    @Parameters({"platform"})
+    public void initAppiumSession(Platforms platform){
+        this.platform = platform;
         driverThread = ThreadLocal.withInitial(()->{
             DriverFactory driverThread = new DriverFactory();
             driverThreadPool.add(driverThread);
             return driverThread;
         });
     }
-    protected AppiumDriver<MobileElement> getDriver() {
-        return driverThread.get().createDriver(Platforms.android);
-        //return driverThread.get().createDriver(Platforms.android);
-    }
 
     @AfterTest(alwaysRun = true)
-    public void endAppiumSession(){
+    public void closeBrowserSession(){
         driverThread.get().quitAppiumSession();
     }
 
